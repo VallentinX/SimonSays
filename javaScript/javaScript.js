@@ -1,53 +1,59 @@
 /* Step One: Done ✅ */
-/* Step Two: ✅ */
+/* Step Two: Done ✅ */
 const buttonColours = ["red", "blue", "green", "yellow"];
 let gamePattern = [];
 let userClickedPattern = [];
-/* Step Seven: 50% ✅ - 50% ❌ */
+/* Step Seven: Done ✅ */
 let level = 0;
 let started = false;
-//  ,  nextSequence
-jQuery(document).keypress(() => {
+document.addEventListener("keydown", function () {
   if (!started) {
-    jQuery("#level-title").text(`Level ${level}`);
+    document.getElementById("level-title").textContent = `Level ${level}`;
     nextSequence();
     started = true;
   }
 });
 
-jQuery(".btn").click(function () {
-  const userChosenColour = jQuery(this).attr("id");
-  userClickedPattern.push(userChosenColour);
-  /* Step Four: ❌ */
-  playSound(userChosenColour);
-  /* Step Six 2/2: 50% ✅ */
-  animatePress(userChosenColour);
-  checkAnswer(userClickedPattern.length - 1);
+document.querySelectorAll(".btn").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    const userChosenColour = this.id;
+    userClickedPattern.push(userChosenColour);
+    /* Step Four: Done ✅ */
+    playSound(userChosenColour);
+    /* Step Six 2/2: Done ✅ */
+    animatePress(userChosenColour);
+    checkAnswer(userClickedPattern.length - 1);
+  });
 });
 
 function nextSequence() {
   userClickedPattern = [];
   level++;
-  jQuery("#level-title").text(`Level ${level}`);
+  document.getElementById("level-title").textContent = "Level " + level;
   const randomNumber = Math.floor(Math.random() * 4);
   const randomChosenColour = buttonColours[randomNumber];
   gamePattern.push(randomChosenColour);
-  /* Step Three: 50% ✅ - 50% ❌*/
-  jQuery(`div#${randomChosenColour}`).fadeOut(100).fadeIn(100);
+  const selectedDiv = document.getElementById(randomChosenColour);
+  /* Step Three: Done ✅ */
+  selectedDiv.style.opacity = "0";
+  setTimeout(function () {
+    selectedDiv.style.opacity = "1";
+  }, 100);
   playSound(randomChosenColour);
 }
-/* Step Five: ✅ */
+/* Step Five: Done ✅ */
 const playSound = (sound) => {
   new Audio(`./sounds/${sound}.mp3`).play();
 };
-/* Step Six 1/2: 50% ✅ - 50% ❌ */
+/* Step Six 1/2: Done ✅ */
 function animatePress(currentColour) {
-  jQuery(`#${currentColour}`).addClass("pressed");
+  const selectedDiv = document.getElementById(currentColour);
+  selectedDiv.classList.add("pressed");
   setTimeout(function () {
-    jQuery(`#${currentColour}`).removeClass("pressed");
+    selectedDiv.classList.remove("pressed");
   }, 100);
 }
-/* Step Eight: 50% ✅ - 50% ❌ */
+/* Step Eight: Done ✅ */
 function checkAnswer(currentLevel) {
   if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
     if (userClickedPattern.length === gamePattern.length) {
@@ -57,15 +63,16 @@ function checkAnswer(currentLevel) {
     }
   } else {
     playSound("wrong");
-    jQuery("body").addClass("game-over");
+    document.body.classList.add("game-over");
     setTimeout(function () {
-      jQuery("body").removeClass("game-over");
+      document.body.classList.remove("game-over");
     }, 200);
-    jQuery("#level-title").text("Game Over! Press any key to start again!");
+    document.getElementById("level-title").textContent =
+      "Game Over! Press any key to start again!";
     startOver();
   }
 }
-/* Step Nine: ✅ */
+/* Step Nine: Done ✅ */
 const startOver = () => {
   level = 0;
   gamePattern = [];
